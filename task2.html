@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Calculator</title>
+
+<style>
+
+/* ✨ Deep Aurora Background */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial;
+    overflow: hidden;
+    background: #0a0a1a;
+    position: relative;
+}
+
+/* Aurora layers */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    width: 160%;
+    height: 160%;
+    top: -30%;
+    left: -30%;
+    border-radius: 50%;
+    opacity: 0.35;
+    filter: blur(80px);
+    animation: auroraSpin 18s ease-in-out infinite alternate;
+}
+
+body::before {
+    background: conic-gradient(from 0deg, #0ff, #a855f7, #ec4899, #0ff);
+    animation-duration: 18s;
+}
+
+body::after {
+    background: conic-gradient(from 180deg, #06b6d4, #6366f1, #f43f5e, #06b6d4);
+    animation-duration: 24s;
+    animation-direction: alternate-reverse;
+    opacity: 0.25;
+}
+
+@keyframes auroraSpin {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* 🌟 Floating Glow Orbs */
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0;
+    animation: floatOrb 20s infinite ease-in-out;
+}
+
+.circle:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #00c9ff, #6a0dad);
+    left: 5%;
+    bottom: -150px;
+    animation-duration: 18s;
+    animation-delay: 0s;
+}
+
+.circle:nth-child(2) {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, #ff00cc, #ff6a00);
+    left: 65%;
+    bottom: -180px;
+    animation-duration: 22s;
+    animation-delay: 4s;
+}
+
+.circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, #00ff99, #00c9ff);
+    left: 38%;
+    bottom: -130px;
+    animation-duration: 16s;
+    animation-delay: 8s;
+}
+
+@keyframes floatOrb {
+    0%   { transform: translateY(0) scale(1);    opacity: 0; }
+    10%  { opacity: 0.55; }
+    80%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+}
+
+/* Starfield canvas sits behind everything */
+#stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 📱 Calculator (WIDER + GLASS LOOK) */
+.calculator {
+    width: 380px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 25px;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(0,0,0,0.7), 0 0 80px rgba(168,85,247,0.15);
+    position: relative;
+    z-index: 1;
+}
+
+/* Display */
+#display {
+    width: 100%;
+    height: 70px;
+    font-size: 26px;
+    margin-bottom: 15px;
+    text-align: right;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+}
+
+/* Buttons Grid */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+/* Buttons */
+button {
+    height: 65px;
+    font-size: 20px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.07);
+    background: rgba(255,255,255,0.3);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.btn-divide, .btn-multiply, .btn-minus, .btn-plus,
+.btn-equals, .btn-clear, .btn-delete, .btn-percent {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.btn-divide:hover, .btn-multiply:hover, .btn-minus:hover,
+.btn-plus:hover, .btn-equals:hover, .btn-clear:hover,
+.btn-delete:hover, .btn-percent:hover {
+    filter: brightness(1.2);
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+/* 🔘 Top Bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    width: 50px;
+    height: 25px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background: #ccc;
+    border-radius: 25px;
+    width: 100%;
+    height: 100%;
+    transition: 0.3s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 2.5px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background: #00c9ff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Auto theme glow */
+.auto-theme {
+    animation: hueShift 5s infinite linear;
+}
+
+@keyframes hueShift {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Starfield -->
+<canvas id="stars"></canvas>
+
+<!-- Glow orbs -->
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+
+<div class="calculator" id="calc">
+    
+    <div class="top-bar">
+        <span style="color:white;font-size:14px;">Auto Color</span>
+
+        <!-- Toggle -->
+        <label class="switch">
+            <input type="checkbox" onchange="toggleAutoTheme(this)">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <input type="text" id="display" disabled>
+
+    <div class="buttons">
+        <button class="btn-clear" onclick="clearDisplay()">C</button>
+        <button class="btn-delete" onclick="deleteLast()">⌫</button>
+        <button class="btn-percent" onclick="append('%')">%</button>
+        <button class="btn-divide" onclick="append('/')">÷</button>
+
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button class="btn-multiply" onclick="append('*')">×</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button class="btn-minus" onclick="append('-')">−</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button class="btn-plus" onclick="append('+')">+</button>
+
+        <button onclick="append('0')" class="zero">0</button>
+        <button onclick="append('.')">.</button>
+        <button class="btn-equals" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+let display = document.getElementById("display");
+
+// Basic functions
+function append(value) {
+    display.value += value;
+}
+
+function clearDisplay() {
+    display.value = "";
+}
+
+function deleteLast() {
+    display.value = display.value.slice(0, -1);
+}
+
+function calculate() {
+    try {
+        display.value = eval(display.value);
+    } catch {
+        display.value = "Error";
+    }
+}
+
+// Keyboard support
+document.addEventListener("keydown", function(event) {
+    let key = event.key;
+
+    if (!isNaN(key) || "+-*/.%".includes(key)) {
+        append(key);
+    } else if (key === "Enter") {
+        calculate();
+    } else if (key === "Backspace") {
+        deleteLast();
+    } else if (key === "Escape") {
+        clearDisplay();
+    }
+});
+
+// 🔥 Auto theme toggle
+function toggleAutoTheme(toggle) {
+    let calc = document.getElementById("calc");
+    if (toggle.checked) {
+        calc.classList.add("auto-theme");
+    } else {
+        calc.classList.remove("auto-theme");
+    }
+}
+
+// ✨ Starfield
+(function () {
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+        stars = [];
+        for (let i = 0; i < 160; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 1.4 + 0.3,
+                alpha: Math.random(),
+                speed: Math.random() * 0.4 + 0.1,
+                dir: Math.random() > 0.5 ? 1 : -1
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => {
+            s.alpha += s.speed * 0.015 * s.dir;
+            if (s.alpha >= 1 || s.alpha <= 0) s.dir *= -1;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${s.alpha.toFixed(2)})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("resize", () => { resize(); initStars(); });
+    resize();
+    initStars();
+    draw();
+})();
+</script>
+
+</body>
+</html>
